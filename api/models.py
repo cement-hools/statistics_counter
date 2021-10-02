@@ -3,7 +3,8 @@ from django.db import models
 
 class Event(models.Model):
     """Событие."""
-    date = models.DateTimeField(verbose_name='дата события')
+
+    date = models.DateField(verbose_name='дата события')
     views = models.PositiveIntegerField(verbose_name='количество показов',
                                         null=True, blank=True, )
     clicks = models.PositiveIntegerField(verbose_name='количество кликов',
