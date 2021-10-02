@@ -11,4 +11,4 @@ class MyFilter(FilterSet):
 
     class Meta:
         model = Event
-        fields = ['date']
+        fields = ('date',)

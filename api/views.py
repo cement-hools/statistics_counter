@@ -1,20 +1,17 @@
 from decimal import Decimal
 
-from django.db import models
-from django.db.models import F, DecimalField, FloatField, Sum
-from django.db.models.functions import Cast
-from django.shortcuts import render
+from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, generics
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.filters import OrderingFilter
-
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .filters import MyFilter
 from .models import Event
 from .serializers import EventAddSerializer, EventSerializer
+from .view_set import CustomViewSet
 
 query = (
     {
@@ -61,18 +58,27 @@ def statistic_clear(request, *args, **kwargs):
     return Response(response, 400)
 
 
-class EventListView(generics.ListAPIView):
+class EventListView(ListCreateAPIView):
     queryset = Event.objects.annotate(
-            cpc=F('cost') / (F('clicks') * Decimal('1.00')),
-            cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
-        )
-    # serializer_class = EventSerializer
+        cpc=F('cost') / (F('clicks') * Decimal('1.00')),
+        cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
+    )
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     filterset_class = MyFilter
     filterset_fields = ('date',)
     ordering_fields = '__all__'
 
+    delete_response = {
+        'status': status.HTTP_204_NO_CONTENT,
+        'data': 'statistic is cleared'
+    }
+
     def get_serializer_class(self):
-        if self.request.method in ('POST', 'PATCH', 'PUT'):
+        if self.request.method in ('POST', 'PATCH', 'PUT',):
             return EventAddSerializer
         return EventSerializer
+
+    def delete(self, request, *args, **kwargs):
+        response = self.delete_response
+        self.queryset.delete()
+        return Response(response, status=status.HTTP_204_NO_CONTENT)
