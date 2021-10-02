@@ -4,12 +4,15 @@ from django.db import models
 from django.db.models import F, DecimalField, FloatField, Sum
 from django.db.models.functions import Cast
 from django.shortcuts import render
-from rest_framework import status
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status, generics
 from rest_framework.decorators import api_view
+from rest_framework.filters import OrderingFilter
 
 from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from statistic_counter.settings import DEFAUL_ORDERING
+from .filters import MyFilter
 from .models import Event
 from .serializers import EventAddSerializer, EventSerializer
 
@@ -56,3 +59,20 @@ def statistic_add(request, *args, **kwargs):
 def statistic_clear(request, *args, **kwargs):
     response = {'status': 'fail'}
     return Response(response, 400)
+
+
+class EventListView(generics.ListAPIView):
+    queryset = Event.objects.annotate(
+            cpc=F('cost') / (F('clicks') * Decimal('1.00')),
+            cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
+        )
+    # serializer_class = EventSerializer
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    filterset_class = MyFilter
+    filterset_fields = ('date',)
+    ordering_fields = '__all__'
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH', 'PUT'):
+            return EventAddSerializer
+        return EventSerializer
