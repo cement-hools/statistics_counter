@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from .filters import CustomFilter
 from .models import Event
-from .serializers import EventAddSerializer, EventSerializer
+from .serializers import EventSerializer
 
 
 class EventListView(ListCreateAPIView):
@@ -49,5 +49,3 @@ class EventListView(ListCreateAPIView):
         response = self.delete_response
         self.queryset.delete()
         return Response(response, status=status.HTTP_204_NO_CONTENT)
-
-
