@@ -49,7 +49,7 @@ class EventTestCase(APITestCase):
         """Создать событие."""
         self.assertEqual(4, Event.objects.all().count(),
                          'Начальное количество событий')
-        url = reverse('event')
+        url = reverse('statistic')
         data = {
             'date': '2020-10-10',
             'views': '20',
@@ -76,7 +76,7 @@ class EventTestCase(APITestCase):
 
     def test_get_list(self):
         """Получаем список всех событий."""
-        url = reverse('event')
+        url = reverse('statistic')
         events = Event.objects.annotate(
             cpc=F('cost') / (F('clicks') * Decimal('1.00')),
             cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
@@ -93,7 +93,7 @@ class EventTestCase(APITestCase):
 
     def test_get_ordering_cpm(self):
         """Сортировка по cpm."""
-        url = reverse('event')
+        url = reverse('statistic')
         events = Event.objects.annotate(
             cpc=F('cost') / (F('clicks') * Decimal('1.00')),
             cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
@@ -106,7 +106,7 @@ class EventTestCase(APITestCase):
 
     def test_get_ordering_cpc(self):
         """Сортировка по cpc."""
-        url = reverse('event')
+        url = reverse('statistic')
         events = Event.objects.annotate(
             cpc=F('cost') / (F('clicks') * Decimal('1.00')),
             cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
@@ -119,7 +119,7 @@ class EventTestCase(APITestCase):
 
     def test_get_filter(self):
         """Фильтрация по дате."""
-        url = reverse('event')
+        url = reverse('statistic')
         events = Event.objects.filter(
             date__range=[date(2021, 9, 30), date(2021, 10, 2)]
         ).annotate(
@@ -141,7 +141,7 @@ class EventTestCase(APITestCase):
 
     def test_get_filter_sort(self):
         """Фильтрация по дате и сортировка по views."""
-        url = reverse('event')
+        url = reverse('statistic')
         events = Event.objects.filter(
             date__range=[date(2021, 9, 30), date(2021, 10, 2)]
         ).annotate(

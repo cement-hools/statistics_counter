@@ -1,3 +1,6 @@
+from decimal import Decimal
+
+from django.db.models import F
 from django.test import TestCase
 
 from api_v2.models import Event
@@ -26,10 +29,11 @@ class EventSerializerTestCase(TestCase):
             'clicks': '10',
             'cost': '5.50'
         }
-        Event.objects.create(**event_raw_1)
-        Event.objects.create(**event_raw_2)
-        Event.objects.create(**event_raw_3)
-
+        Event.objects.bulk_create([
+            Event(**event_raw_1),
+            Event(**event_raw_2),
+            Event(**event_raw_3),
+        ])
         events = Event.objects.all()
         data = EventSerializer(events, many=True).data
         expected_data = [

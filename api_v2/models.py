@@ -25,14 +25,14 @@ class Event(models.Model):
         ordering = ('-date',)
 
     def __str__(self):
-        return f'{self.id} date: {self.date}'
+        return f'{self.id} date: {self.date}, cpc {self.cpc}'
 
     def save(self, *args, **kwargs):
         cpc = cpm = None
         if self.cost and self.clicks:
-            cpc = self.cost / self.clicks
+            cpc = float(self.cost) / float(self.clicks)
         if self.cost and self.views:
-            cpm = self.cost / self.views * 1000
+            cpm = float(self.cost) / float(self.views) * 1000
 
         self.cpc = cpc
         self.cpm = cpm
