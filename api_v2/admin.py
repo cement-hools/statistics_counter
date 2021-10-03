@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from api.models import Event
+from api_v2.models import Event
 
 admin.site.register(Event)

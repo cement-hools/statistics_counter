@@ -1,19 +1,17 @@
-from decimal import Decimal
-
-from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 
-from .filters import CustomFilter
-from .models import Event
-from .serializers import EventAddSerializer, EventSerializer
+from api_v2.filters import CustomFilter
+from api_v2.models import Event
+from api_v2.serializers import EventSerializer
 
 
 class EventListView(ListCreateAPIView):
     """
+    Версия 2
     Показать все записи статистики событий.
     Поля:
         date - дата события (обязательное поле)
@@ -30,10 +28,7 @@ class EventListView(ListCreateAPIView):
         - date_range: string - статистика за период.
         - ordering: string - отсортировать события по выбранному полю (доступны все поля)
     """
-    queryset = Event.objects.annotate(
-        cpc=F('cost') / (F('clicks') * Decimal('1.00')),
-        cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
-    )
+    queryset = Event.objects.all()
     serializer_class = EventSerializer
     filter_backends = (DjangoFilterBackend, OrderingFilter)
     filterset_class = CustomFilter
@@ -49,5 +44,3 @@ class EventListView(ListCreateAPIView):
         response = self.delete_response
         self.queryset.delete()
         return Response(response, status=status.HTTP_204_NO_CONTENT)
-
-

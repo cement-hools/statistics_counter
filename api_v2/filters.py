@@ -1,7 +1,7 @@
 from django_filters import filters
 from django_filters.rest_framework import FilterSet
 
-from api.models import Event
+from api_v2.models import Event
 
 
 class CustomFilter(FilterSet):
