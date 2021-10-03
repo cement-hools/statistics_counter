@@ -15,7 +15,7 @@ class EventAddSerializer(ModelSerializer):
 
 
 class EventSerializer(ModelSerializer):
-    """Сериалайзер добавления события."""
+    """Сериалайзер списка всех событий."""
 
     cpc = serializers.DecimalField(max_digits=19, decimal_places=2)
     cpm = serializers.DecimalField(max_digits=19, decimal_places=2)

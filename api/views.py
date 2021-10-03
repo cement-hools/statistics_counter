@@ -8,7 +8,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
 
-from .filters import MyFilter
+from .filters import CustomFilter
 from .models import Event
 from .serializers import EventAddSerializer, EventSerializer
 from .view_set import CustomViewSet
@@ -64,7 +64,7 @@ class EventListView(ListCreateAPIView):
         cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
     )
     filter_backends = (DjangoFilterBackend, OrderingFilter)
-    filterset_class = MyFilter
+    filterset_class = CustomFilter
     filterset_fields = ('date',)
     ordering_fields = '__all__'
 
