@@ -11,7 +11,7 @@ from api.models import Event
 from api.serializers import EventSerializer
 
 
-class UserTestCase(APITestCase):
+class EventTestCase(APITestCase):
     def setUp(self):
         event_raw_1 = {
             'date': '2021-10-01',
