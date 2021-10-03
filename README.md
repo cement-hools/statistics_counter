@@ -16,7 +16,6 @@ https://github.com/cement-hools/statistics_counter/badge.svg
 
 ### Описание
 - **GET**```/api/v1/statistic/``` Показать все записи статистики событий.
-
 ```
 date - дата события
 views - количество показов (опционально)
@@ -70,8 +69,6 @@ cpm - cost/views * 1000 (средняя стоимость 1000 показов)
     cost - по возрастанию(cost), по убыванию(-cost) 
     cpc - по возрастанию(cpc), по убыванию(-cpc) 
     cpm - по возрастанию(cpm), по убыванию(-cpm) 
-    
-    
 ```
 - **POST**```/api/v1/statistic/``` Добавить событие в БД
 
@@ -142,6 +139,7 @@ cost:	string($decimal) - Стоимость кликов
    ```
 7. Проект доступен 
    ```
+   http://127.0.0.1:8000/
    http://localhost:8000/
    ```
 
@@ -175,6 +173,7 @@ python manage.py test
 7. Проект доступен 
    ```
    http://127.0.0.1/
+   http://localhost/
    ```
 
 
