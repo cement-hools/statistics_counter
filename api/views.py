@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.db.models import F
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
-from rest_framework.decorators import api_view
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import ListCreateAPIView
 from rest_framework.response import Response
@@ -12,22 +11,25 @@ from .filters import CustomFilter, CustomFilter2
 from .models import Event2, Event
 from .serializers import EventAddSerializer, EventSerializer, Event2Serializer
 
-query = (
-    {
-        "date": "2021-10-2",
-        "views": "10",
-        "clicks": "5",
-        "cost": "5"
-    }
-)
-
-@api_view(['GET', 'POST'])
-def statistic_clear(request, *args, **kwargs):
-    response = {'status': 'fail'}
-    return Response(response, 400)
-
 
 class EventListView(ListCreateAPIView):
+    """
+    Показать все записи статистики событий.
+    Поля:
+        date - дата события
+        views - количество показов (опционально)
+        clicks - количество кликов (опционально)
+        cost - стоимость кликов (опционально, в рублях с точностью до копеек)
+        cpc - cost/clicks (средняя стоимость клика)
+        cpm - cost/views * 1000 (средняя стоимость 1000 показов)
+    Параметры запроса:
+        Формат даты: YYYY-MM-DD
+        - date: string - вывести статистику по событию за указанную дату
+        - from_date: string - вывести статистику по событиям начиная с указанной даты
+        - to_date: string - вывести статистику по событиям по указанную дату
+        - date_range: string - статистика за период.
+        - ordering: string - отсортировать события по выбранному полю (доступны все поля)
+    """
     queryset = Event.objects.annotate(
         cpc=F('cost') / (F('clicks') * Decimal('1.00')),
         cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
