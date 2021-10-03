@@ -1,7 +1,7 @@
 from django_filters import filters
 from django_filters.rest_framework import FilterSet
 
-from api.models import Event
+from api.models import Event2, Event
 
 
 class CustomFilter(FilterSet):
@@ -14,4 +14,17 @@ class CustomFilter(FilterSet):
 
     class Meta:
         model = Event
+        fields = ('date',)
+
+
+class CustomFilter2(FilterSet):
+    """Фильтр для выбора диапазона даты."""
+    from_date = filters.DateFilter(field_name='date', lookup_expr='gte',
+                                   label='From')
+    to_date = filters.DateFilter(field_name='date', lookup_expr='lte',
+                                 label='To')
+    date_range = filters.DateRangeFilter(field_name='date', label='Range')
+
+    class Meta:
+        model = Event2
         fields = ('date',)
