@@ -1,7 +1,10 @@
+from decimal import Decimal
+
+from django.db.models import F
 from django.test import TestCase
 
-from api_v2.models import Event
-from api_v2.serializers import EventSerializer
+from api.models import Event
+from api.serializers import EventSerializer
 
 
 class EventSerializerTestCase(TestCase):
@@ -30,7 +33,10 @@ class EventSerializerTestCase(TestCase):
         Event.objects.create(**event_raw_2)
         Event.objects.create(**event_raw_3)
 
-        events = Event.objects.all()
+        events = Event.objects.annotate(
+            cpc=F('cost') / (F('clicks') * Decimal('1.00')),
+            cpm=F('cost') / (F('views') * Decimal('1.00')) * 1000,
+        )
         data = EventSerializer(events, many=True).data
         expected_data = [
             {

@@ -138,3 +138,15 @@ class EventTestCase(APITestCase):
         serializer_data = EventSerializer(events, many=True).data
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(serializer_data, response.data)
+
+    def test_delete(self):
+        self.assertEqual(4, Event.objects.all().count(),
+                         'Начальное количество событий')
+        url = reverse('statistic_v2')
+
+        response = self.client.delete(url)
+
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code,
+                         'Неверный статус ответа')
+        self.assertEqual(0, Event.objects.all().count(),
+                         'Неверное количество событий после создания')
